@@ -11,7 +11,6 @@ app.use(express.json());
 
 const SECRET = process.env.PAYMONGO_SECRET_KEY;
 
-// 🟩 Create PaymentIntent (Multi-method)
 app.post("/create-payment-intent", async (req, res) => {
   try {
     const { amount, description } = req.body;
@@ -21,12 +20,12 @@ app.post("/create-payment-intent", async (req, res) => {
       {
         data: {
           attributes: {
-            amount: amount * 100, // convert pesos → centavos
+            amount: amount * 100,
             currency: "PHP",
             payment_method_allowed: ["gcash", "card", "paymaya", "grab_pay"],
             payment_method_options: {
               card: {
-                request_three_d_secure: "automatic", // optional 3DS check
+                request_three_d_secure: "automatic",
               },
             },
             description,
@@ -45,8 +44,6 @@ app.post("/create-payment-intent", async (req, res) => {
   }
 });
 
-// 🟩 Attach PaymentMethod to PaymentIntent
-// Confirm PaymentIntent (Attach Payment Method)
 app.post("/attach-payment", async (req, res) => {
   const { paymentIntentId, paymentMethodId } = req.body;
   try {
@@ -56,7 +53,7 @@ app.post("/attach-payment", async (req, res) => {
         data: {
           attributes: {
             payment_method: paymentMethodId,
-            return_url: "http://localhost:6965/#/successPayment", // ✅ change to your own website or deep link
+            return_url: "http://localhost:57219/#/successPayment", // you need to run the Quick Coat website first then copy the URL of the running website then paste that url in here...
           },
         },
       },
@@ -70,12 +67,10 @@ app.post("/attach-payment", async (req, res) => {
   }
 });
 
-// 🟩 Auto port selection if current port is busy
 const startServer = (port) => {
   const server = app.listen(port, async () => {
     console.clear();
 
-    // Simulate a short "boot sequence"
     const delay = (ms) => new Promise((res) => setTimeout(res, ms));
     const log = (msg, color = chalk.green) => console.log(color(msg));
 
@@ -89,24 +84,18 @@ const startServer = (port) => {
     await delay(500);
     console.clear();
 
-// Big hacker banner
-// Big hacker banner
-console.log(chalk.green.bold("╔══════════════════════════════════════════════════════════════════════════════════╗"));
-console.log(chalk.green.bold("║    █████╗  ██████╗ ██╗   ██╗ █████╗ ███████╗███████╗██████╗ ██╗████████╗███████╗ ║"));
-console.log(chalk.green.bold("║   ██╔══██╗██╔═══██╗██║   ██║██╔══██╗██╔════╝██╔════╝██╔══██╗██║╚══██╔══╝██╔════╝ ║"));
-console.log(chalk.green.bold("║   ███████║██║   ██║██║   ██║███████║███████╗█████╗  ██████╔╝██║   ██║   █████╗   ║"));
-console.log(chalk.green.bold("║   ██╔══██║██║   ██║██║   ██║██╔══██║╚════██║██╔══╝  ██╔══██╗██║   ██║   ██╔══╝   ║"));
-console.log(chalk.green.bold("║   ██║  ██║╚██████╔╝╚██████╔╝██║  ██║███████║███████╗██║  ██║██║   ██║   ███████╗ ║"));
-console.log(chalk.green.bold("║   ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝   ╚══════╝ ║"));
-console.log(chalk.green.bold("║                                                                                  ║"));
-console.log(chalk.green.bold("║                               [ AQUAFRITZ SERVER ]                               ║"));
-console.log(chalk.green.bold("╚══════════════════════════════════════════════════════════════════════════════════╝"));
-
-
+    console.log(chalk.green.bold("╔══════════════════════════════════════════════════════════════════════════════════╗"));
+    console.log(chalk.green.bold("║    █████╗  ██████╗ ██╗   ██╗ █████╗ ███████╗███████╗██████╗ ██╗████████╗███████╗ ║"));
+    console.log(chalk.green.bold("║   ██╔══██╗██╔═══██╗██║   ██║██╔══██╗██╔════╝██╔════╝██╔══██╗██║╚══██╔══╝██╔════╝ ║"));
+    console.log(chalk.green.bold("║   ███████║██║   ██║██║   ██║███████║███████╗█████╗  ██████╔╝██║   ██║   █████╗   ║"));
+    console.log(chalk.green.bold("║   ██╔══██║██║   ██║██║   ██║██╔══██║╚════██║██╔══╝  ██╔══██╗██║   ██║   ██╔══╝   ║"));
+    console.log(chalk.green.bold("║   ██║  ██║╚██████╔╝╚██████╔╝██║  ██║███████║███████╗██║  ██║██║   ██║   ███████╗ ║"));
+    console.log(chalk.green.bold("║   ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝   ╚══════╝ ║"));
+    console.log(chalk.green.bold("║                                                                                  ║"));
+    console.log(chalk.green.bold("║                               [ AQUAFRITZ SERVER ]                               ║"));
+    console.log(chalk.green.bold("╚══════════════════════════════════════════════════════════════════════════════════╝"));
 
     await delay(400);
-
-    // Info box
     const lines = [
       { label: "STATUS", value: "ONLINE ✅", color: chalk.greenBright },
       { label: "ENV", value: process.env.NODE_ENV || "development", color: chalk.cyanBright },
@@ -134,7 +123,6 @@ console.log(chalk.green.bold("╚═══════════════�
     log("// Press Ctrl+C to terminate.", chalk.green.dim);
   });
 
-  // Auto port fallback
   server.on("error", (err) => {
     if (err.code === "EADDRINUSE") {
       const newPort = port + 1;
@@ -147,7 +135,5 @@ console.log(chalk.green.bold("╚═══════════════�
   });
 };
 
-
-// 🟩 Start the server
 const initialPort = parseInt(process.env.PORT || 4242, 10);
 startServer(initialPort);

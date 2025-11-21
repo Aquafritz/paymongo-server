@@ -45,7 +45,7 @@ app.post("/create-payment-intent", async (req, res) => {
 });
 
 app.post("/attach-payment", async (req, res) => {
-  const { paymentIntentId, paymentMethodId } = req.body;
+  const { paymentIntentId, paymentMethodId, returnUrl } = req.body;
   try {
     const response = await axios.post(
       `https://api.paymongo.com/v1/payment_intents/${paymentIntentId}/attach`,
@@ -53,7 +53,7 @@ app.post("/attach-payment", async (req, res) => {
         data: {
           attributes: {
             payment_method: paymentMethodId,
-            return_url: "http://localhost:57219/#/successPayment", // you need to run the Quick Coat website first then copy the URL of the running website then paste that url in here...
+            return_url: returnUrl, // you need to run the Quick Coat website first then copy the URL of the running website then paste that url in here...
           },
         },
       },
